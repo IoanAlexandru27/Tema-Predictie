@@ -49,7 +49,7 @@ def Get_KeyWords(data, nr=500):
 		if tok > nr:
 			return Tokens, max_len
 
-def TokenizeSentence(tok_dict, text, padding = 500):
+def TokenizeSentence(tok_dict, text, padding = 512):
 	ret = padding * [0]
 	i = -1
 	for word in text.split(' '):
@@ -140,30 +140,22 @@ def main():
 	for i in data: 
 		input_data.append((TokenizeSentence(tokens, i['text']), GetOutput(i['rating'])))
 
-	# model = NNModel(input_data)
-	# model.NNConstruction()
-	# model.fitModel()
+
+	l = len(input_data)
+	training = list(input_data[int(l*80/100):])
+	test_x = list()
+	test_y = list()
+	for el in training:
+		test_x.append(el[0])
+		test_y.append(el[1])
+
+	model = NNModel(input_data)
+	model.NNConstruction()
+	model.fitModel()
 
 	model = load_model('ReviewPredicter.h5')
 
-	# l = len(input_data)
-	# training = list(input_data[int(l*80/100):])
-	# test_x = list()
-	# test_y = list()
-	# for el in training:
-	# 	test_x.append(el[0])
-	# 	test_y.append(el[1])
-
-	# y = 
-	# print(model.predict((TokenizeSentence(tokens,"(TokenizeSentence(tokens, i['text']), GetOutput(i['rating'])"), GetOutput(i['rating'])))
-	count = 0
-	# k = -1
-	# for pred, truth in zip(y, test_y):
-	# 	count += (1 if (np.argmax(pred) == np.argmax(truth)) else 0)
-
-	print(count / len(y))
-
-	#PredictTrain("test_wor.json", "Varianta_70%.h5", "results.json")
+	PredictTrain("test_wor.json", "ReviewPredicter.h5", "results.json")
 
 
 if __name__ == '__main__':
