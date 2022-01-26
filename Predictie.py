@@ -14,7 +14,7 @@ import random
 
 
 
-def ReadReviews(filename):
+def ReadReviews(filename): # Citeste reviewuri
 	ret = []
 	f = open(filename, encoding="utf8")
 	data = json.load(f)
@@ -24,7 +24,7 @@ def ReadReviews(filename):
 def fcn(e):
 	return e[1]
 
-def Get_KeyWords(data, nr=500):
+def Get_KeyWords(data, nr=500): # Determinare cuvinte cheie
 	Ocur = dict()
 	Tokens = dict()
 	tok = 0
@@ -49,7 +49,7 @@ def Get_KeyWords(data, nr=500):
 		if tok > nr:
 			return Tokens, max_len
 
-def TokenizeSentence(tok_dict, text, padding = 512):
+def TokenizeSentence(tok_dict, text, padding = 512): # Tokenizare propozitii
 	ret = padding * [0]
 	i = -1
 	for word in text.split(' '):
@@ -63,7 +63,7 @@ def TokenizeSentence(tok_dict, text, padding = 512):
 class NNModel:
 	def __init__(self, training_data):
 
-		#training_data = training_data.sort(key = lambda x: random.random() )
+		#Initializare
 		l = len(training_data)
 
 		training = list(training_data[:int(l*80/100)])
@@ -93,19 +93,9 @@ class NNModel:
 		self.model.add(Dense(6, activation='softmax'))
 		self.model.compile(loss='categorical_crossentropy', optimizer='adam', metrics='accuracy')
 
-	def fitModel(self):
+	def fitModel(self): # Antrenare
 		hist = self.model.fit(np.array(self.training_data_x), np.array(self.training_data_y), epochs=20, batch_size=100, verbose=1)
 		self.model.save('ReviewPredicter.h5', hist)
-
-	def test(self):
-		k = -1
-		acc = 0
-		for i in self.test_x:
-			k += 1
-			y = self.model.predict(i)
-			if text_y[k] - y < 0.01:
-				acc += 1
-		print(acc, len(text_x))
 
 def GetOutput(x):
 	ret = list(6 * [0])
